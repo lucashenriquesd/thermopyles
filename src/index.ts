@@ -1,10 +1,13 @@
 import express from 'express'
+import pinoHttp from 'pino-http'
 import statusRoutes from './routes/status'
 
 const app = express()
 
-app.use('/', statusRoutes)
-// app.get('/', (req, res) => console.log('test'))
+app.use(pinoHttp())
+app.get('/', (req, res) => res.send('Thermopyles'))
+
+app.use('/status', statusRoutes)
 
 const port: number = 3000
 
