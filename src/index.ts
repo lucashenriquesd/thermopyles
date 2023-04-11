@@ -11,6 +11,4 @@ app.use('/status', statusRoutes)
 
 const port: number = 3000
 
-app.listen(port, () => {
-  console.log(`Thermopyles listening at ${port} 🛡️`)
-})
+app.listen(port, () => console.log(`Thermopyles listening at ${port} 🛡️`))

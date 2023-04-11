@@ -15,6 +15,7 @@
     "@types/node": "^18.15.11",
     "nodemon": "^2.0.22",
     "pino-pretty": "^10.0.0",
+    "prisma": "^4.12.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   },
@@ -22,5 +23,8 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "pino-http": "^8.3.3"
+  },
+  "prisma": {
+    "schema": "db/prisma/schema.prisma"
   }
 }
