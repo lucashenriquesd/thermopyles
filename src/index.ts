@@ -1,13 +1,15 @@
 import express from 'express'
 import pinoHttp from 'pino-http'
-import statusRoutes from './routes/status'
+import authRouter from './modules/auth/routes'
+import bodyParser from 'body-parser'
 
 const app = express()
 
 app.use(pinoHttp())
+app.use(bodyParser.json());
 app.get('/', (req, res) => res.send('Thermopyles'))
 
-app.use('/status', statusRoutes)
+app.use('/auth', authRouter)
 
 const port: number = 3000
 
