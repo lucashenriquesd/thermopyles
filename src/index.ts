@@ -1,7 +1,7 @@
 import express from 'express'
 import pinoHttp from 'pino-http'
-import authRouter from './modules/auth/routes'
 import bodyParser from 'body-parser'
+import authRouter from './modules/auth/routes'
 
 const app = express()
 
