@@ -36,16 +36,18 @@ const login = async (email: string, password: string): Promise<boolean | string>
     return false
   }
 
-  const token: Promise<string> = generateToken(user.id)
+  const token: Promise<string> = generateToken(user.id, user.email)
 
   return token
 }
 
-const generateToken = async (userId: string) => {
+const generateToken = async (userId: string, email: string) => {
   const jwtSecret: string = process.env.JWT_SECRET as string
   const payload = {
-    sub: userId
+    sub: userId,
+    email
   }
+
   const token = jwt.sign(payload, jwtSecret, { expiresIn: '1h' })
 
   return token
