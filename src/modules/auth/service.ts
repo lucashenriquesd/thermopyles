@@ -88,7 +88,7 @@ const createPermission = async (permissionName: string) => {
       }
     }
 
-    return { errors: { title: 'unable to create permission', messages: errorMessage } }
+    return { error: { title: 'unable to create permission', messages: errorMessage } }
   }
 }
 
