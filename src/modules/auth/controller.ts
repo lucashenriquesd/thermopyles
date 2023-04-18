@@ -5,7 +5,7 @@ const register = async (req: Request, res: Response) => {
   const { email, password } = req.body
   const addedUser = await authService.register(email, password)
 
-  return res.status(200).send(addedUser)
+  return res.status(201).send(addedUser)
 }
 
 const login = async (req: Request, res: Response) => {
@@ -37,4 +37,22 @@ const verifyToken = async (req: Request, res: Response) => {
   return res.status(200).send(decodedToken)
 }
 
-export { register, login, verifyToken }
+const createPermission = async (req: Request, res: Response) => {
+  const { permissionName } = req.body
+  const createdPermission = await authService.createPermission(permissionName)
+
+  if ('errors' in createdPermission) {
+    return res.status(409).send(createdPermission)
+  }
+
+  return res.status(201).send(createdPermission)
+}
+
+const activatePermission = async (req: Request, res: Response) => {
+  const { permissionName, active } = req.body
+  const permission = await authService.activatePermission(permissionName, active)
+
+  return res.status(200).send(permission)
+}
+
+export { register, login, verifyToken, createPermission, activatePermission }
