@@ -13,7 +13,7 @@ const register = async (email: string, password: string) => {
 
   const user = await prisma.user.create({
     data: {
-      email: email,
+      email,
       password: hash
     },
   })
@@ -47,6 +47,7 @@ const generateToken = async (userId: string, email: string) => {
   const jwtSecret: string = process.env.JWT_SECRET as string
   const payload = {
     sub: userId,
+    iss: 'thermopyles',
     email
   }
 
