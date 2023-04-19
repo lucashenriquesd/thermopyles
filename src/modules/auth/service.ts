@@ -1,7 +1,9 @@
-import * as dotenv from 'dotenv/config'
+import * as dotenv from 'dotenv'
 import { PrismaClient, Prisma } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+
+dotenv.config()
 
 const prisma = new PrismaClient()
 

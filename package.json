@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon --exec 'ts-node ./src/index.ts' | pino-pretty",
+    "start:dev": "nodemon --exec 'ts-node ./src/index.ts'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -30,7 +30,8 @@
     "joi": "^17.9.1",
     "jsonwebtoken": "^9.0.0",
     "pino": "^8.11.0",
-    "pino-http": "^8.3.3"
+    "pino-http": "^8.3.3",
+    "pino-mongodb": "^4.3.0"
   },
   "prisma": {
     "schema": "db/prisma/schema.prisma"
