@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv'
 import { PrismaClient, Prisma } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { v4 as uuidv4} from 'uuid'
 
 dotenv.config()
 
@@ -46,6 +47,7 @@ const login = async (email: string, password: string): Promise<boolean | string>
 const generateToken = async (userId: string, email: string) => {
   const jwtSecret: string = process.env.JWT_SECRET as string
   const payload = {
+    jti: uuidv4(),
     sub: userId,
     iss: 'thermopyles',
     email
