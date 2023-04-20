@@ -48,8 +48,8 @@ const generateToken = async (userId: string, email: string) => {
   const jwtSecret: string = process.env.JWT_SECRET as string
   const payload = {
     jti: uuidv4(),
-    sub: userId,
     iss: 'thermopyles',
+    sub: userId,
     email
   }
 
