@@ -30,6 +30,19 @@ const login = async (email: string, password: string): Promise<boolean | string>
     where: {
       email,
     },
+    include: {
+      permissions: {
+        where: {
+          active: true,
+          permission: {
+            active: true
+          }
+        },
+        include: {
+          permission: true
+        }
+      }
+    }
   })
 
   if (!user) {
@@ -42,18 +55,20 @@ const login = async (email: string, password: string): Promise<boolean | string>
     return false
   }
 
-  const token: string = await generateToken(user.id, user.email)
+  const permissions = user.permissions.map(permissions => permissions.permission.name)
+  const token: string = await generateToken(user.id, user.email, permissions)
 
   return token
 }
 
-const generateToken = async (userId: string, email: string) => {
+const generateToken = async (userId: string, email: string, permissions: string[]) => {
   const jwtSecret: string = process.env.JWT_SECRET as string
   const payload: jwtPayload | jwt.JwtPayload = {
     jti: uuidv4(),
     iss: 'thermopyles',
     sub: userId,
-    email
+    email,
+    permissions
   }
 
   const token = jwt.sign(payload, jwtSecret, { expiresIn: '2w' })
@@ -152,4 +167,54 @@ const isTokenRevoked = async (token: string): Promise<boolean> => {
   }
 }
 
-export { register, login, verifyToken, createPermission, activatePermission, revokeToken, isTokenRevoked }
+const isUserAuthorized = async (token: string, permission: string): Promise<boolean> => {
+  try {
+    const jwtSecret: string = process.env.JWT_SECRET as string
+    const payload = jwt.verify(token, jwtSecret) as jwtPayload
+
+    if (payload.permissions?.includes(permission)) {
+      return true
+    }
+    
+    return false
+  } catch (error) {
+    throw error
+  }
+}
+
+const addPermissionToUser = async (email: string, permissionName: string) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    })
+  
+    if (!user) {
+      throw Error
+    }
+
+    const permission = await prisma.permission.findUnique({
+      where: {
+        name: permissionName,
+      },
+    })
+
+    if (!permission) {
+      throw Error
+    }
+
+    const userPermission = await prisma.userPermission.create({
+      data: {
+        userId: user.id,
+        permissionId: permission.id,
+      },
+    })
+
+    return userPermission
+  } catch (error) {
+    throw error
+  }
+}
+
+export { register, login, verifyToken, createPermission, activatePermission, revokeToken, isTokenRevoked, isUserAuthorized, addPermissionToUser }

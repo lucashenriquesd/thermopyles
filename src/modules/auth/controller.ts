@@ -99,4 +99,15 @@ const revokeToken = async (req: Request, res: Response) => {
   return res.status(200).send(revokedToken)
 }
 
-export { register, login, verifyToken, createPermission, activatePermission, revokeToken }
+const addPermissionToUser = async (req: Request, res: Response) => {
+  try {
+    const { email, permissionName } = req.body
+    const userPermission = await authService.addPermissionToUser(email, permissionName)
+
+    return res.status(201).send(userPermission)
+  } catch (error) {
+    return res.status(500).send('Internal Server Error')
+  }
+}
+
+export { register, login, verifyToken, createPermission, activatePermission, revokeToken, addPermissionToUser }

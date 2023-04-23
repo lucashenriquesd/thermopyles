@@ -3,7 +3,8 @@ interface jwtPayload {
   iss: string,
   sub: string,
   exp: number,
-  email: string
+  email: string,
+  permissions?: string[]
 }
 
 export { jwtPayload }
