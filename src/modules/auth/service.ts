@@ -3,9 +3,12 @@ import { PrismaClient, Prisma } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { v4 as uuidv4} from 'uuid'
+import { Redis } from 'ioredis'
+import { jwtPayload } from './interfaces/jwt-payload'
 
 dotenv.config()
 
+const redis = new Redis(6379, 'redis')
 const prisma = new PrismaClient()
 
 const register = async (email: string, password: string) => {
@@ -46,14 +49,14 @@ const login = async (email: string, password: string): Promise<boolean | string>
 
 const generateToken = async (userId: string, email: string) => {
   const jwtSecret: string = process.env.JWT_SECRET as string
-  const payload = {
+  const payload: jwtPayload | jwt.JwtPayload = {
     jti: uuidv4(),
     iss: 'thermopyles',
     sub: userId,
     email
   }
 
-  const token = jwt.sign(payload, jwtSecret, { expiresIn: '1h' })
+  const token = jwt.sign(payload, jwtSecret, { expiresIn: '2w' })
 
   return token
 }
@@ -110,4 +113,43 @@ const activatePermission = async (permissionName: string, active: boolean) => {
   return updatedPermission
 }
 
-export { register, login, verifyToken, createPermission, activatePermission }
+const revokeToken = async (token: string): Promise<boolean> => {
+  try {
+    const jwtSecret: string = process.env.JWT_SECRET as string
+    const payload = jwt.verify(token, jwtSecret) as jwtPayload
+    const revokedToken = await isTokenRevoked(token)
+
+    if (revokedToken) {
+      return false
+    }
+
+    const redisJwtVar = `thermopyles:revoked-token:${payload.jti}`
+    const expiresFromJwtInSeconds = payload.exp - Math.floor(Date.now() / 1000)
+    const expiresPlus5MinutesInSeconds = expiresFromJwtInSeconds + 300
+
+    await redis.set(redisJwtVar, JSON.stringify(payload))
+    await redis.expire(redisJwtVar, expiresPlus5MinutesInSeconds)
+
+    return true
+  } catch (error) {
+    throw error
+  }
+}
+
+const isTokenRevoked = async (token: string): Promise<boolean> => {
+  try {
+    const jwtSecret: string = process.env.JWT_SECRET as string
+    const payload = jwt.verify(token, jwtSecret) as jwtPayload
+    const revokedToken = await redis.get(`thermopyles:revoked-token:${payload.jti}`)
+
+    if (revokedToken) {
+      return true
+    }
+
+    return false
+  } catch (error) {
+    throw error
+  }
+}
+
+export { register, login, verifyToken, createPermission, activatePermission, revokeToken, isTokenRevoked }

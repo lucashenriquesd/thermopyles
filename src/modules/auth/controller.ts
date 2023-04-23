@@ -40,7 +40,7 @@ const register = async (req: Request, res: Response) => {
     }
 
     if (err instanceof Error) {
-      return res.status(501).send({ error: { title, messages: ['Internal Server Error'] } })
+      return res.status(500).send({ error: { title, messages: ['Internal Server Error'] } })
     }
   }
 }
@@ -92,4 +92,11 @@ const activatePermission = async (req: Request, res: Response) => {
   return res.status(200).send(permission)
 }
 
-export { register, login, verifyToken, createPermission, activatePermission }
+const revokeToken = async (req: Request, res: Response) => {
+  const { token } = req.params
+  const revokedToken = await authService.revokeToken(token)
+
+  return res.status(200).send(revokedToken)
+}
+
+export { register, login, verifyToken, createPermission, activatePermission, revokeToken }

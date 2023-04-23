@@ -3,10 +3,6 @@ import pino from 'pino'
 
 dotenv.config()
 
-const stdoutTransport = pino.transport({
-  target: 'pino-pretty'
-})
-
 const mongoTransport = pino.transport({
   target: 'pino-mongodb',
   options: {
@@ -23,7 +19,6 @@ const mongoTransport = pino.transport({
   }
 })
 
-const stdoutLogger = { logger: pino(stdoutTransport) }
 const mongoLogger = { logger: pino(mongoTransport) }
 
-export { stdoutLogger, mongoLogger }
+export { mongoLogger }
