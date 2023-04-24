@@ -2,7 +2,7 @@ import express from 'express'
 import { mongoLogger } from './pino-config'
 import pinoHttp from 'pino-http'
 import bodyParser from 'body-parser'
-import authRouter from './modules/auth/routes'
+import authRouter from './modules/auth'
 
 const app = express()
 
