@@ -9,7 +9,7 @@ const app = express()
 app.use(pinoHttp())
 app.use(pinoHttp(mongoLogger))
 app.use(bodyParser.json())
-app.get('/', (req, res) => res.send('Thermopyles'))
+app.get('/', (req, res) => res.send('thermopyles'))
 
 app.use('/auth', authRouter)
 
