@@ -217,4 +217,4 @@ const addPermissionToUser = async (email: string, permissionName: string) => {
   }
 }
 
-export { register, login, verifyToken, createPermission, activatePermission, revokeToken, isTokenRevoked, isUserAuthorized, addPermissionToUser }
+export { register, login, verifyToken, createPermission, activatePermission, revokeToken, isTokenRevoked, isUserAuthorized, addPermissionToUser, generateToken }
